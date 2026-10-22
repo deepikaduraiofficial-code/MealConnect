@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "server": "node server/server.js",
+    "server": "node backend/server.js",
     "dev:all": "concurrently -k -p \"[{name}]\" -n \"BACKEND,FRONTEND\" -c \"blue.bold,green.bold\" \"npm run server\" \"npm run dev\"",
-    "start": "node server/server.js",
+    "start": "node backend/server.js",
     "test:api": "node scripts/test-api.js",
     "build": "vite build",
     "lint": "oxlint",

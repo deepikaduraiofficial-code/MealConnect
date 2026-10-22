@@ -100,7 +100,7 @@ async function runTests() {
         description: 'Hot vegetable sweet corn soup with 2 freshly baked whole wheat rolls.',
         quantity: 20,
         unit: 'portions',
-        price: 0, // Free donation
+        price: 15,
         dietary: 'Veg',
         pickupLocation: 'Green Leaf Main Desk'
       })
@@ -187,19 +187,62 @@ async function runTests() {
 
     assert(duplicateVerifyRes.success === false, 'Duplicate verification correctly rejected by backend');
 
-    // 10. Admin Dashboard Statistics & Reporting
-    console.log('\n--- 10. Testing Admin Dashboard & Report Generation ---');
-    const adminStatsRes = await fetch(`${BASE_URL}/reports/dashboard`, {
+    // 10. Admin Dashboard & Expired Listings
+    console.log('\n--- 10. Testing Admin Endpoints ---');
+    const adminStatsRes = await fetch(`${BASE_URL}/admin/dashboard`, {
       headers: { Authorization: `Bearer ${adminToken}` }
     }).then(r => r.json());
 
     assert(adminStatsRes.success === true && adminStatsRes.data.impact.totalMealsRescued > 0, `Admin stats computed: ${adminStatsRes.data?.impact.totalMealsRescued} meals rescued, ${adminStatsRes.data?.impact.totalPeopleNourished} people nourished`);
 
-    const adminReportRes = await fetch(`${BASE_URL}/reports/generate`, {
+    const expiredListingsRes = await fetch(`${BASE_URL}/admin/expired-listings`, {
+      headers: { Authorization: `Bearer ${adminToken}` }
+    }).then(r => r.json());
+    assert(expiredListingsRes.success === true, `Admin expired listings audit returned ${expiredListingsRes.count} expired items`);
+
+    const adminReportRes = await fetch(`${BASE_URL}/admin/report`, {
       headers: { Authorization: `Bearer ${adminToken}` }
     }).then(r => r.json());
 
     assert(adminReportRes.success === true && adminReportRes.data.summaryStats.totalHotels > 0, 'Admin report generated real database dataset for print/PDF export');
+
+    // 11. Impact Statistics Endpoint
+    console.log('\n--- 11. Testing Impact Statistics ---');
+    const impactRes = await fetch(`${BASE_URL}/impact`).then(r => r.json());
+    assert(impactRes.success === true && impactRes.data.totalMealsRescued > 0 && Array.isArray(impactRes.data.monthlyStats), `Impact statistics API computed: ${impactRes.data?.totalMealsRescued} meals, ${impactRes.data?.totalKgRescued} kg, monthly trajectory calculated`);
+
+    // 12. Mock Payment Simulation Workflow
+    console.log('\n--- 12. Testing Mock Payment Simulation Workflow ---');
+    const mockPaymentOrder = await fetch(`${BASE_URL}/payments/create-order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${trustToken}`
+      },
+      body: JSON.stringify({
+        foodId: createdFoodId,
+        quantity: 2,
+        simulateOutcome: 'success'
+      })
+    }).then(r => r.json());
+
+    assert(mockPaymentOrder.success === true && mockPaymentOrder.isMockSimulation === true, 'Mock payment simulation session created without deducting real money');
+
+    // Test simulated bank decline outcome
+    const declinedVerify = await fetch(`${BASE_URL}/payments/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${trustToken}`
+      },
+      body: JSON.stringify({
+        testOrderId: mockPaymentOrder.testOrderId,
+        simulationToken: mockPaymentOrder.simulationToken,
+        simulateOutcome: 'failed'
+      })
+    }).then(r => r.json());
+
+    assert(declinedVerify.success === false && declinedVerify.error.includes('declined'), 'Payment simulation properly supports simulated failure status');
 
     // Clean up created test food listing
     await fetch(`${BASE_URL}/food/${createdFoodId}`, {

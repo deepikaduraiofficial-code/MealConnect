@@ -23,42 +23,46 @@ meal connect/
 ├── .env.example               # Environment template with placeholders
 ├── package.json               # Unified dependencies and operational scripts
 ├── vite.config.js             # Vite development server with backend API proxy
-├── server/
+├── backend/                   # Dedicated backend architecture (College Project Coding Appendix)
 │   ├── server.js              # Express application entry point & CORS configuration
+│   ├── package.json           # Backend dependencies and standalone run scripts
+│   ├── .env.example           # Backend environment configuration template
+│   ├── README.md              # Backend & API documentation for project report
 │   ├── config/
-│   │   └── db.js              # Mongoose MongoDB connection manager
+│   │   └── database.js        # Mongoose MongoDB connection manager
 │   ├── models/
-│   │   ├── User.js            # User model (Hotels, Trusts, Admin)
-│   │   ├── FoodItem.js        # Surplus food listing model with dynamic server expiry
+│   │   ├── User.js            # User model (Hotels, Trusts, Admin) with bcrypt hashing
+│   │   ├── Food.js            # Surplus food listing model with dynamic shelf-life
 │   │   ├── Cart.js            # User shopping cart with quantity tracking
 │   │   ├── Order.js           # Orders, timeline, pickup PIN & QR code verification
-│   │   ├── Payment.js         # Transaction records with signature logging
+│   │   ├── Payment.js         # Transaction records with mock simulation logging
 │   │   └── Notification.js    # Multi-role alert and notifications system
 │   ├── controllers/
 │   │   ├── authController.js  # Hotel/Trust/Admin login, registration & verifications
 │   │   ├── foodController.js  # Food CRUD, search, filter, and shelf-life tracking
 │   │   ├── cartController.js  # Cart item management and validation
 │   │   ├── orderController.js # Order lifecycle, server totals & QR handover verification
-│   │   ├── paymentController.js# Razorpay integration and test mode verification
-│   │   ├── reportController.js# System metrics, nutrition impact & print/PDF dataset
+│   │   ├── paymentController.js# Mock simulation (success/failed/pending) & Razorpay
+│   │   ├── adminController.js # Admin verifications, listings review & audits
+│   │   ├── impactController.js# Database-aggregated metrics (kg rescued, meals, CO2)
 │   │   └── notificationController.js # Read/unread notifications by role
 │   ├── middleware/
-│   │   ├── authMiddleware.js  # Bearer JWT protection & role authorization guards
-│   │   ├── errorHandler.js    # Global error handler with Mongoose error mapping
-│   │   └── validateRequest.js # Request payload validation utilities
+│   │   ├── auth.js            # Bearer JWT protection & role authorization guards
+│   │   └── errorHandler.js    # Global error handler with Mongoose error mapping
 │   ├── routes/
 │   │   ├── authRoutes.js      # /api/auth/*
 │   │   ├── foodRoutes.js      # /api/food/*
 │   │   ├── cartRoutes.js      # /api/cart/*
 │   │   ├── orderRoutes.js     # /api/orders/*
 │   │   ├── paymentRoutes.js   # /api/payments/*
-│   │   ├── reportRoutes.js    # /api/reports/*
+│   │   ├── adminRoutes.js     # /api/admin/*
+│   │   ├── impactRoutes.js    # /api/impact/*
 │   │   └── notificationRoutes.js # /api/notifications/*
 │   └── utils/
 │       ├── expiryHelper.js    # Server-side shelf-life and countdown calculation
 │       └── seedData.js        # Automated seeder for demo hotels, trusts, admin & food
 ├── scripts/
-│   └── test-api.js            # Automated backend endpoint test suite (17/17 tests passing)
+│   └── test-api.js            # Automated backend endpoint test suite (21/21 tests passing)
 └── src/
     ├── services/
     │   └── api.js             # Frontend API client communicating with backend

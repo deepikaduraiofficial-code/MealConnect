@@ -189,10 +189,24 @@ export const api = {
     getHistory: () => request('/payments')
   },
 
-  // Reports API
+  // Reports & Admin API
   reports: {
     getDashboardStats: () => request('/reports/dashboard'),
     getReportData: () => request('/reports/generate')
+  },
+
+  admin: {
+    getStats: () => request('/admin/stats'),
+    getDashboardStats: () => request('/admin/dashboard'),
+    getExpiredListings: () => request('/admin/expired-listings'),
+    getReportData: () => request('/admin/report'),
+    toggleHotelVerification: (id) => request(`/admin/hotels/${id}/verify`, { method: 'PUT' }),
+    toggleTrustVerification: (id) => request(`/admin/trusts/${id}/verify`, { method: 'PUT' })
+  },
+
+  // Impact Statistics API
+  impact: {
+    getStatistics: () => request('/impact')
   },
 
   // Notifications API
