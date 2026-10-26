@@ -25,8 +25,9 @@ const formatListingWithExpiry = (item) => {
 // Get food listings
 export const getFoodListings = async (req, res, next) => {
   try {
-    const { search, category, dietary, priceFilter, maxDistance, sortBy } = req.query;
-    const query = {};
+    const query = {
+      image: { $exists: true, $nin: ['', null] }
+    };
 
     if (category && category !== 'All') {
       query.category = category;
@@ -44,8 +45,10 @@ export const getFoodListings = async (req, res, next) => {
 
     if (search && search.trim()) {
       const s = search.trim();
+      const normS = s.replace(/chapathi/gi, 'chapati');
       query.$or = [
         { name: { $regex: s, $options: 'i' } },
+        { name: { $regex: normS, $options: 'i' } },
         { hotelName: { $regex: s, $options: 'i' } },
         { hotelLocation: { $regex: s, $options: 'i' } },
         { category: { $regex: s, $options: 'i' } }
@@ -133,10 +136,10 @@ export const createFoodItem = async (req, res, next) => {
       dietary
     } = req.body;
 
-    if (!name || !image || quantity === undefined) {
+    if (!name || quantity === undefined) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide food name, image, and available quantity.'
+        error: 'Please provide food name and available quantity.'
       });
     }
 
@@ -217,7 +220,7 @@ export const updateFoodItem = async (req, res, next) => {
 
     if (name) item.name = name.trim();
     if (category) item.category = category;
-    if (image) item.image = image;
+    if (image !== undefined) item.image = image;
     if (description !== undefined) item.description = description;
     if (quantity !== undefined) item.quantity = Number(quantity);
     if (unit) item.unit = unit;
@@ -235,6 +238,34 @@ export const updateFoodItem = async (req, res, next) => {
       success: true,
       message: 'Listing updated successfully!',
       data: formatListingWithExpiry(item)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Permanently delete food item image / listing without image
+export const deleteFoodImage = async (req, res, next) => {
+  try {
+    const item = await Food.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ success: false, error: 'Food item not found' });
+    }
+
+    const isOwner = item.hotel.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: 'Forbidden. You can only delete food items listed by your own hotel.'
+      });
+    }
+
+    await Food.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Food listing deleted as image was removed'
     });
   } catch (error) {
     next(error);

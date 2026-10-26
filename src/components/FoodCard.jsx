@@ -23,14 +23,23 @@ import {
 } from 'lucide-react';
 
 export const FoodCard = ({ food, onOpenDetails, onQuickOrder, onDelete }) => {
-  const { currentRole, currentUser, deleteFoodListing } = useApp();
+  const { currentRole, currentUser, deleteFoodListing, deleteFoodImage } = useApp();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // Authorized hotel/admin users can edit and delete food listings
+  // Authorized hotel/admin users can edit and delete food listings & images
   const isHotelAuthorized = currentRole === 'hotel' || currentRole === 'admin';
+
+  // Resolved food image - empty string if deleted or not assigned
+  const resolvedImage = getMatchingFoodImage(food.name, food.category, food.image);
+
+  // If food listing does not have a valid, authentic image, completely omit rendering it
+  if (!resolvedImage || resolvedImage.trim() === '') {
+    return null;
+  }
 
   // Listen for global menu open event & click outside to close dropdown
   useEffect(() => {
@@ -93,6 +102,10 @@ export const FoodCard = ({ food, onOpenDetails, onQuickOrder, onDelete }) => {
     }
   };
 
+  const handleDeleteImageConfirm = (id) => {
+    deleteFoodImage(id);
+  };
+
   return (
     <>
       <div 
@@ -106,16 +119,17 @@ export const FoodCard = ({ food, onOpenDetails, onQuickOrder, onDelete }) => {
         {/* Food Image Wrapper (rounded top, overflow hidden for clean zoom) */}
         <div 
           onClick={() => onOpenDetails(food)}
-          className="relative h-48 sm:h-52 w-full rounded-t-3xl overflow-hidden bg-slate-100 cursor-pointer"
+          className="relative h-48 sm:h-52 w-full rounded-t-3xl overflow-hidden cursor-pointer bg-slate-100"
         >
           <img
-            src={getMatchingFoodImage(food.name, food.category, food.image)}
+            src={resolvedImage}
             alt={food.name}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
               expiryInfo.isExpired ? 'grayscale-40 contrast-90' : ''
             }`}
             onError={(e) => {
-              e.target.src = getMatchingFoodImage(food.name, food.category);
+              const card = e.target.closest('.group');
+              if (card) card.style.display = 'none';
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
@@ -307,7 +321,23 @@ export const FoodCard = ({ food, onOpenDetails, onQuickOrder, onDelete }) => {
                       </button>
                     )}
 
-                    {/* 6. Delete – Authorized Hotel/Admin Users Only */}
+                    {/* 6a. Delete Food Image – Only when item currently has an image */}
+                    {isHotelAuthorized && resolvedImage && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMenuOpen(false);
+                          setIsDeleteImageModalOpen(true);
+                        }}
+                        className="w-full py-2 px-3 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition-colors flex items-center gap-2"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <span>Delete Food Image</span>
+                      </button>
+                    )}
+
+                    {/* 6b. Delete Listing – Authorized Hotel/Admin Users Only */}
                     {isHotelAuthorized && (
                       <button
                         type="button"
@@ -319,7 +349,7 @@ export const FoodCard = ({ food, onOpenDetails, onQuickOrder, onDelete }) => {
                         className="w-full py-2 px-3 rounded-xl border border-rose-200 bg-rose-50/80 hover:bg-rose-100 text-rose-700 font-bold text-xs transition-colors flex items-center gap-2"
                       >
                         <Trash2 className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                        <span>Delete</span>
+                        <span>Delete Listing</span>
                       </button>
                     )}
 
@@ -355,12 +385,22 @@ export const FoodCard = ({ food, onOpenDetails, onQuickOrder, onDelete }) => {
 
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Food Image Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteImageModalOpen}
+        onClose={() => setIsDeleteImageModalOpen(false)}
+        onConfirm={handleDeleteImageConfirm}
+        foodItem={food}
+        mode="image"
+      />
+
+      {/* Delete Food Listing Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
         foodItem={food}
+        mode="listing"
       />
 
       {/* Edit Food Modal */}

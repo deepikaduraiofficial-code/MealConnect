@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { FoodCard } from '../components/FoodCard';
 import { FoodDetailsModal } from '../components/FoodDetailsModal';
 import { calculateFoodStatus } from '../utils/expiryUtils';
+import { isValidFoodImage } from '../utils/foodImageResolver';
 import { 
   Search, 
   Filter, 
@@ -50,6 +51,7 @@ export const MarketplacePage = ({ onDirectCheckout }) => {
   // Urgent items banner count (<= 1 hour remaining - Expiring Soon)
   const urgentCount = useMemo(() => {
     return listings.filter(item => {
+      if (!isValidFoodImage(item.image)) return false;
       if (item.status === 'Collected' || item.quantity <= 0) return false;
       const st = calculateFoodStatus(item.preparedTime, item.bestBeforeTime);
       return st.isExpiringSoon;
@@ -61,9 +63,17 @@ export const MarketplacePage = ({ onDirectCheckout }) => {
     const now = new Date().getTime();
 
     return listings.filter((item) => {
-      // Search matches
+      // Must have a valid authentic food image (completely remove black/empty cards)
+      if (!isValidFoodImage(item.image)) {
+        return false;
+      }
+
+      // Search matches (supports both "chapathi" and "chapati" transliteration)
       const query = searchTerm.toLowerCase().trim();
+      const normQuery = query.replace(/chapathi/g, 'chapati');
+      const normName = item.name.toLowerCase().replace(/chapathi/g, 'chapati');
       const matchesSearch = !query || 
+        normName.includes(normQuery) ||
         item.name.toLowerCase().includes(query) ||
         item.hotelName.toLowerCase().includes(query) ||
         item.hotelLocation.toLowerCase().includes(query);

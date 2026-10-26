@@ -37,6 +37,7 @@ export const HotelDashboard = () => {
     addFoodListing, 
     updateFoodListing, 
     deleteFoodListing,
+    deleteFoodImage,
     advanceOrderStatus,
     setActiveView,
     setActiveTrackingOrderId,
@@ -83,6 +84,7 @@ export const HotelDashboard = () => {
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [imageToDelete, setImageToDelete] = useState(null);
   const [imageError, setImageError] = useState('');
   const fileInputRef = useRef(null);
 
@@ -202,7 +204,7 @@ export const HotelDashboard = () => {
 
   const handleRemoveImage = () => {
     setFormData(prev => ({ ...prev, image: '' }));
-    setImageError('Please upload a food image before creating the listing.');
+    setImageError('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -211,11 +213,6 @@ export const HotelDashboard = () => {
   const handleSubmitForm = (e) => {
     e.preventDefault();
 
-    // Validation: Image must be uploaded
-    if (!formData.image || formData.image.trim() === '') {
-      setImageError('Please upload a food image before creating the listing.');
-      return;
-    }
     setImageError('');
 
     const prepIso = new Date(formData.preparedTime).toISOString();
@@ -224,7 +221,7 @@ export const HotelDashboard = () => {
     const payload = {
       name: formData.name.trim(),
       category: formData.category,
-      image: formData.image, // EXACT uploaded image data
+      image: formData.image ? formData.image.trim() : '', // EXACT uploaded image data or empty
       description: formData.description || `Fresh surplus ${formData.name} prepared safely.`,
       quantity: Number(formData.quantity),
       unit: formData.unit,
@@ -456,17 +453,24 @@ export const HotelDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {hotelListings.map((item) => (
+          {hotelListings
+            .filter(item => getMatchingFoodImage(item.name, item.category, item.image))
+            .map((item) => (
             <div key={item.id} className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50 flex flex-col justify-between space-y-3">
               <div className="flex gap-3">
-                <img 
-                  src={getMatchingFoodImage(item.name, item.category, item.image)} 
-                  alt={item.name} 
-                  className="w-16 h-16 rounded-xl object-cover shrink-0" 
-                  onError={(e) => {
-                    e.target.src = getMatchingFoodImage(item.name, item.category);
-                  }}
-                />
+                {(() => {
+                  const resolvedImg = getMatchingFoodImage(item.name, item.category, item.image);
+                  return (
+                    <img 
+                      src={resolvedImg} 
+                      alt={item.name} 
+                      className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200 bg-slate-100" 
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  );
+                })()}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between">
                     <h4 className="font-bold text-slate-900 text-xs sm:text-sm truncate">{item.name}</h4>
@@ -490,6 +494,15 @@ export const HotelDashboard = () => {
                 >
                   <Edit3 className="w-3.5 h-3.5 text-slate-500" /> Edit
                 </button>
+                {getMatchingFoodImage(item.name, item.category, item.image) && (
+                  <button
+                    onClick={() => setImageToDelete(item)}
+                    className="px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1"
+                    title="Delete Food Image"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-rose-500" /> Delete Image
+                  </button>
+                )}
                 <button
                   onClick={() => setItemToDelete(item)}
                   className="px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-100 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1"
@@ -768,13 +781,31 @@ export const HotelDashboard = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Food Image Confirmation Modal */}
+      {imageToDelete && (
+        <DeleteConfirmationModal
+          isOpen={!!imageToDelete}
+          onClose={() => setImageToDelete(null)}
+          onConfirm={(id) => {
+            deleteFoodImage(id);
+            setImageToDelete(null);
+          }}
+          foodItem={imageToDelete}
+          mode="image"
+        />
+      )}
+
+      {/* Delete Food Listing Confirmation Modal */}
       {itemToDelete && (
         <DeleteConfirmationModal
           isOpen={!!itemToDelete}
           onClose={() => setItemToDelete(null)}
-          onConfirm={(id) => deleteFoodListing(id)}
+          onConfirm={(id) => {
+            deleteFoodListing(id);
+            setItemToDelete(null);
+          }}
           foodItem={itemToDelete}
+          mode="listing"
         />
       )}
 

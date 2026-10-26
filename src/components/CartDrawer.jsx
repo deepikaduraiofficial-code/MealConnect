@@ -98,14 +98,21 @@ export const CartDrawer = () => {
             ) : (
               cart.map(({ food, quantity }) => (
                 <div key={food.id} className="pt-4 first:pt-0 flex gap-4">
-                  <img
-                    src={getMatchingFoodImage(food.name, food.category, food.image)}
-                    alt={food.name}
-                    className="w-20 h-20 rounded-2xl object-cover shrink-0 bg-slate-100 border border-slate-100"
-                    onError={(e) => {
-                      e.target.src = getMatchingFoodImage(food.name, food.category);
-                    }}
-                  />
+                  {(() => {
+                    const cartImg = getMatchingFoodImage(food.name, food.category, food.image);
+                    return cartImg ? (
+                      <img
+                        src={cartImg}
+                        alt={food.name}
+                        className="w-20 h-20 rounded-2xl object-cover shrink-0 bg-slate-100 border border-slate-100"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-2xl bg-slate-200/80 border border-slate-300 shrink-0" />
+                    );
+                  })()}
                   
                   <div className="flex-1 min-w-0 space-y-1">
                     <div className="flex items-start justify-between gap-2">

@@ -32,11 +32,13 @@ export const FoodDetailsModal = ({ food, onClose, onDirectCheckout }) => {
     currentRole, 
     currentUser, 
     deleteFoodListing,
+    deleteFoodImage,
     setActiveView
   } = useApp();
   
   const [selectedQty, setSelectedQty] = useState(1);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Dynamic live expiry tracking (1 second interval)
@@ -96,8 +98,17 @@ export const FoodDetailsModal = ({ food, onClose, onDirectCheckout }) => {
     onClose();
   };
 
+  const handleDeleteImageConfirm = (id) => {
+    deleteFoodImage(id);
+  };
+
   const formattedPreparedTime = formatFoodTimeDisplay(food.preparedTime);
   const formattedBestBefore = formatFoodTimeDisplay(food.bestBeforeTime);
+  const resolvedFoodImage = getMatchingFoodImage(food.name, food.category, food.image);
+
+  if (!resolvedFoodImage || resolvedFoodImage.trim() === '') {
+    return null;
+  }
 
   return (
     <div 
@@ -119,16 +130,20 @@ export const FoodDetailsModal = ({ food, onClose, onDirectCheckout }) => {
         </button>
 
         {/* Left Side: Large Food Image */}
-        <div className="md:w-5/12 relative h-64 md:h-auto bg-slate-100 shrink-0">
-          <img
-            src={getMatchingFoodImage(food.name, food.category, food.image)}
-            alt={food.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.src = getMatchingFoodImage(food.name, food.category);
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent md:hidden" />
+        <div className="md:w-5/12 relative h-64 md:h-auto shrink-0 bg-slate-100">
+          {resolvedFoodImage && (
+            <>
+              <img
+                src={resolvedFoodImage}
+                alt={food.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent md:hidden" />
+            </>
+          )}
           
           <div className="absolute bottom-4 left-4 right-4 text-white md:hidden">
             <span className="px-2.5 py-1 rounded-full bg-emerald-500 text-white font-bold text-xs shadow-md inline-block mb-1">
@@ -388,7 +403,7 @@ export const FoodDetailsModal = ({ food, onClose, onDirectCheckout }) => {
               </button>
             )}
 
-            {/* Authorized Hotel User Actions: Edit Food & Delete Food Item */}
+            {/* Authorized Hotel User Actions: Edit Food, Delete Food Image & Delete Food Item */}
             {isHotelAuthorized && (
               <div className="space-y-2">
                 <button
@@ -399,6 +414,17 @@ export const FoodDetailsModal = ({ food, onClose, onDirectCheckout }) => {
                   <Edit3 className="w-4 h-4 text-amber-600" />
                   Edit Food Listing
                 </button>
+
+                {resolvedFoodImage && (
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteImageModalOpen(true)}
+                    className="w-full py-2.5 px-4 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-2xs"
+                  >
+                    <Trash2 className="w-4 h-4 text-rose-500" />
+                    Delete Food Image
+                  </button>
+                )}
 
                 <button
                   type="button"
@@ -417,13 +443,25 @@ export const FoodDetailsModal = ({ food, onClose, onDirectCheckout }) => {
 
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Food Image Confirmation Modal */}
+      {isDeleteImageModalOpen && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteImageModalOpen}
+          onClose={() => setIsDeleteImageModalOpen(false)}
+          onConfirm={handleDeleteImageConfirm}
+          foodItem={food}
+          mode="image"
+        />
+      )}
+
+      {/* Delete Food Listing Confirmation Modal */}
       {isDeleteModalOpen && (
         <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
           onConfirm={handleDeleteConfirm}
           foodItem={food}
+          mode="listing"
         />
       )}
 

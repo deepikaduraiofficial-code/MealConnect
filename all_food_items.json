@@ -3,7 +3,7 @@
     "id": "food-4",
     "name": "Steamed Idli & Hot Sambar",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-9",
@@ -39,7 +39,7 @@
     "id": "food-14",
     "name": "Ghee Dosa",
     "category": "Breakfast",
-    "image": "/food-images/ghee_dosa.jpg"
+    "image": "/food-images/plain_dosa.jpg"
   },
   {
     "id": "food-15",
@@ -72,12 +72,6 @@
     "image": "/food-images/sambar_vada.jpg"
   },
   {
-    "id": "food-20",
-    "name": "Chapati",
-    "category": "Breakfast",
-    "image": "/food-images/chapati_vegetable_kurma.jpg"
-  },
-  {
     "id": "food-21",
     "name": "Idiyappam",
     "category": "Breakfast",
@@ -103,7 +97,7 @@
   },
   {
     "id": "food-2",
-    "name": "Chapati & Vegetable Kurma",
+    "name": "Chapathi & Vegetable Kurma",
     "category": "Lunch & Main Course",
     "image": "/food-images/chapati_vegetable_kurma.jpg"
   },
@@ -135,13 +129,13 @@
     "id": "food-26",
     "name": "Tomato Rice",
     "category": "Lunch & Main Course",
-    "image": "/food-images/tomato_rice.jpg"
+    "image": "/food-images/sambar_rice.jpg"
   },
   {
     "id": "food-27",
     "name": "Coconut Rice",
     "category": "Lunch & Main Course",
-    "image": "/food-images/coconut_rice.jpg"
+    "image": "/food-images/curd_rice.jpg"
   },
   {
     "id": "food-28",
@@ -183,7 +177,7 @@
     "id": "food-34",
     "name": "Parotta",
     "category": "Lunch & Main Course",
-    "image": "/food-images/parotta.jpg"
+    "image": "/food-images/kothu_parotta.jpg"
   },
   {
     "id": "food-35",
@@ -237,7 +231,7 @@
     "id": "food-42",
     "name": "Banana Bajji",
     "category": "Snacks",
-    "image": "/food-images/banana_bajji.jpg"
+    "image": "/food-images/vazhakkai_bajji.jpg"
   },
   {
     "id": "food-43",
@@ -261,7 +255,7 @@
     "id": "food-46",
     "name": "Vazhakkai Bajji",
     "category": "Snacks",
-    "image": "/food-images/banana_bajji.jpg"
+    "image": "/food-images/vazhakkai_bajji.jpg"
   },
   {
     "id": "food-47",
@@ -282,52 +276,10 @@
     "image": "/food-images/onion_pakoda.jpg"
   },
   {
-    "id": "food-50",
-    "name": "Murukku",
-    "category": "Snacks",
-    "image": "/food-images/murukku.jpg"
-  },
-  {
-    "id": "food-51",
-    "name": "Mixture",
-    "category": "Snacks",
-    "image": "/food-images/murukku.jpg"
-  },
-  {
-    "id": "food-52",
-    "name": "Sundal",
-    "category": "Snacks",
-    "image": "/food-images/sundal.jpg"
-  },
-  {
-    "id": "food-53",
-    "name": "Pani Puri",
-    "category": "Snacks",
-    "image": "/food-images/pani_puri.jpg"
-  },
-  {
-    "id": "food-54",
-    "name": "Masala Puri",
-    "category": "Snacks",
-    "image": "/food-images/pani_puri.jpg"
-  },
-  {
     "id": "food-55",
     "name": "Vada Pav",
     "category": "Snacks",
     "image": "/food-images/vada_pav.jpg"
-  },
-  {
-    "id": "food-56",
-    "name": "Cutlet",
-    "category": "Snacks",
-    "image": "/food-images/cutlet.jpg"
-  },
-  {
-    "id": "food-57",
-    "name": "Vegetable Cutlet",
-    "category": "Snacks",
-    "image": "/food-images/cutlet.jpg"
   },
   {
     "id": "food-58",
@@ -339,13 +291,7 @@
     "id": "food-59",
     "name": "Potato Wedges",
     "category": "Snacks",
-    "image": "/food-images/potato_wedges.jpg"
-  },
-  {
-    "id": "food-60",
-    "name": "Spring Roll",
-    "category": "Snacks",
-    "image": "/food-images/spring_roll.jpg"
+    "image": "/food-images/french_fries.jpg"
   },
   {
     "id": "food-61",
@@ -357,13 +303,13 @@
     "id": "food-62",
     "name": "Rasgulla",
     "category": "Sweets & Desserts",
-    "image": "/food-images/rasgulla.jpg"
+    "image": "/food-images/gulab_jamun.jpg"
   },
   {
     "id": "food-63",
     "name": "Jalebi",
     "category": "Sweets & Desserts",
-    "image": "/food-images/jalebi.jpg"
+    "image": "/food-images/kesari.jpg"
   },
   {
     "id": "food-64",
@@ -405,7 +351,7 @@
     "id": "food-70",
     "name": "Kulfi",
     "category": "Sweets & Desserts",
-    "image": "/food-images/kulfi.jpg"
+    "image": "/food-images/ice_cream.jpg"
   },
   {
     "id": "food-71",
@@ -471,7 +417,7 @@
     "id": "food-80",
     "name": "Watermelon Juice",
     "category": "Drinks",
-    "image": "/food-images/watermelon_juice.jpg"
+    "image": "/food-images/fresh_lime_juice.jpg"
   },
   {
     "id": "food-81",
@@ -501,7 +447,7 @@
     "id": "food-85",
     "name": "Badam Milk",
     "category": "Drinks",
-    "image": "/food-images/badam_milk.jpg"
+    "image": "/food-images/rose_milk.jpg"
   },
   {
     "id": "food-86",
@@ -513,19 +459,19 @@
     "id": "food-87",
     "name": "Buttermilk",
     "category": "Drinks",
-    "image": "/food-images/buttermilk.jpg"
+    "image": "/food-images/rose_milk.jpg"
   },
   {
     "id": "food-88",
     "name": "Tender Coconut",
     "category": "Drinks",
-    "image": "/food-images/tender_coconut.jpg"
+    "image": "/food-images/fresh_lime_juice.jpg"
   },
   {
     "id": "food-89",
     "name": "Chicken Biryani",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-90",
@@ -555,7 +501,7 @@
     "id": "food-94",
     "name": "Egg Biryani",
     "category": "Non-Vegetarian",
-    "image": "/food-images/egg_biryani.jpg"
+    "image": "/food-images/fried_rice.jpg"
   },
   {
     "id": "food-95",
@@ -579,19 +525,19 @@
     "id": "food-98",
     "name": "Fish Curry",
     "category": "Non-Vegetarian",
-    "image": "/food-images/fish_curry.jpg"
+    "image": "/food-images/fish_fry.jpg"
   },
   {
     "id": "food-99",
     "name": "Chicken Curry",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_curry.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-100",
     "name": "Idli + Vada + Sambar",
     "category": "Combo Meals",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-101",
@@ -609,19 +555,13 @@
     "id": "food-103",
     "name": "Biryani + Egg",
     "category": "Combo Meals",
-    "image": "/food-images/egg_biryani.jpg"
+    "image": "/food-images/fried_rice.jpg"
   },
   {
     "id": "food-104",
     "name": "Parotta + Chicken Curry",
     "category": "Combo Meals",
-    "image": "/food-images/parotta.jpg"
-  },
-  {
-    "id": "food-105",
-    "name": "Chapati + Veg Kurma",
-    "category": "Combo Meals",
-    "image": "/food-images/chapati_vegetable_kurma.jpg"
+    "image": "/food-images/kothu_parotta.jpg"
   },
   {
     "id": "food-106",
@@ -633,7 +573,7 @@
     "id": "food-107",
     "name": "Bajji + Tea",
     "category": "Combo Meals",
-    "image": "/food-images/banana_bajji.jpg"
+    "image": "/food-images/vazhakkai_bajji.jpg"
   },
   {
     "id": "food-108",
@@ -645,7 +585,7 @@
     "id": "food-109",
     "name": "Burger + French Fries + Juice",
     "category": "Combo Meals",
-    "image": "/food-images/veg_burger.jpg"
+    "image": "/food-images/french_fries.jpg"
   },
   {
     "id": "food-6",

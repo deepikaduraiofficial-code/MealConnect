@@ -78,6 +78,10 @@ export const NearbyRescueMap = ({ onSelectFood }) => {
   // Filter active listings that are non-expired & available
   const filteredListings = useMemo(() => {
     return listings.filter(item => {
+      // Must have valid image
+      const resolvedImg = getMatchingFoodImage(item.name, item.category, item.image);
+      if (!resolvedImg) return false;
+
       // Must be available and have quantity
       if (item.status === 'Ordered' || item.status === 'Collected' || item.quantity <= 0) return false;
 
@@ -425,11 +429,21 @@ export const NearbyRescueMap = ({ onSelectFood }) => {
                           className="p-3 bg-white hover:bg-emerald-50/40 rounded-2xl border border-slate-200/90 transition-all cursor-pointer flex items-center justify-between gap-3 shadow-2xs group"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <img
-                              src={getMatchingFoodImage(item.name, item.category, item.image)}
-                              alt={item.name}
-                              className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0"
-                            />
+                            {(() => {
+                              const mapImg = getMatchingFoodImage(item.name, item.category, item.image);
+                              return mapImg ? (
+                                <img
+                                  src={mapImg}
+                                  alt={item.name}
+                                  className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-12 h-12 rounded-xl bg-slate-200/80 border border-slate-300 shrink-0" />
+                              );
+                            })()}
                             <div className="min-w-0">
                               <h5 className="font-extrabold text-xs text-slate-900 truncate group-hover:text-emerald-700 transition-colors">
                                 {item.name}

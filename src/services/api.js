@@ -114,6 +114,11 @@ export const api = {
         body: JSON.stringify(foodData)
       }),
 
+    deleteImage: (id) =>
+      request(`/food/${id}/image`, {
+        method: 'DELETE'
+      }),
+
     delete: (id) =>
       request(`/food/${id}`, {
         method: 'DELETE'

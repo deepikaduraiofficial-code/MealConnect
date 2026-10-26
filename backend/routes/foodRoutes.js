@@ -5,6 +5,7 @@ import {
   getMyHotelFoodListings,
   createFoodItem,
   updateFoodItem,
+  deleteFoodImage,
   deleteFoodItem
 } from '../controllers/foodController.js';
 import { protect, authorizeRoles } from '../middleware/auth.js';
@@ -16,6 +17,7 @@ router.get('/my-listings', protect, authorizeRoles('hotel'), getMyHotelFoodListi
 router.get('/:id', getFoodItemById);
 router.post('/', protect, authorizeRoles('hotel'), createFoodItem);
 router.put('/:id', protect, authorizeRoles('hotel', 'admin'), updateFoodItem);
+router.delete('/:id/image', protect, authorizeRoles('hotel', 'admin'), deleteFoodImage);
 router.delete('/:id', protect, authorizeRoles('hotel', 'admin'), deleteFoodItem);
 
 export default router;

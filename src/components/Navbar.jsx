@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { NotificationDropdown } from './NotificationDropdown';
+import mealConnectLogo from '../assets/Meal Connect_ Food Rescue Emblem (1).png';
 import { 
-  Utensils, 
   ShoppingBag, 
   ShieldCheck, 
   Building2, 
@@ -45,8 +45,19 @@ export const Navbar = ({ onOpenAuth }) => {
             }}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-300">
-              <Utensils className="w-6 h-6" />
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl overflow-hidden relative flex items-center justify-center bg-white shadow-md shadow-emerald-500/10 border border-slate-100 group-hover:scale-105 transition-transform duration-300 shrink-0">
+              <img 
+                src={mealConnectLogo} 
+                alt="Meal Connect Logo" 
+                className="absolute max-w-none select-none pointer-events-none"
+                style={{
+                  width: '182.27%',
+                  height: '182.27%',
+                  left: '-44.18%',
+                  top: '-20.93%',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">

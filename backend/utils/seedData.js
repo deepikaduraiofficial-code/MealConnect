@@ -120,7 +120,7 @@ export const seedDatabase = async () => {
         hotelLocation: hotel2.location,
         name: 'Steamed Idli & Hot Sambar',
         category: 'Breakfast',
-        image: '/food-images/steamed_idli_hot_sambar.jpg',
+        image: '/food-images/idli.jpg',
         description: 'Fluffy white rice idlis served with hot drumstick sambar and coconut chutney. Sealed in food-grade trays.',
         quantity: 50,
         unit: 'portions',

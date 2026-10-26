@@ -122,7 +122,7 @@ export const EditFoodModal = ({ isOpen, onClose, food, onSave }) => {
       ...food,
       name: formData.name.trim(),
       category: formData.category,
-      image: formData.image || food.image,
+      image: formData.image !== undefined ? formData.image : (food.image || ''),
       description: formData.description.trim(),
       quantity: Number(formData.quantity),
       unit: formData.unit,
@@ -392,33 +392,57 @@ export const EditFoodModal = ({ isOpen, onClose, food, onSave }) => {
             <label className="block text-xs font-bold text-slate-700 mb-1">
               Food Image
             </label>
-            <div className="flex items-center gap-3">
-              <img
-                src={getMatchingFoodImage(formData.name || food.name, formData.category, formData.image)}
-                alt="Food preview"
-                className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
-              />
-              <div className="flex-1">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleImageFileChange}
-                  className="hidden"
-                  id="edit-food-file-input"
-                />
-                <label
-                  htmlFor="edit-food-file-input"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
-                >
-                  <Upload className="w-3.5 h-3.5 text-slate-500" />
-                  Change Image
-                </label>
-                {imageError && (
-                  <p className="text-[11px] text-rose-500 mt-1">{imageError}</p>
-                )}
-              </div>
-            </div>
+            {(() => {
+              const previewImg = getMatchingFoodImage(formData.name || food.name, formData.category, formData.image);
+              return (
+                <div className="flex items-center gap-3">
+                  {previewImg ? (
+                    <img
+                      src={previewImg}
+                      alt="Food preview"
+                      className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 shrink-0" />
+                  )}
+                  <div className="flex-1 flex items-center gap-2">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleImageFileChange}
+                      className="hidden"
+                      id="edit-food-file-input"
+                    />
+                    <label
+                      htmlFor="edit-food-file-input"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-slate-500" />
+                      {previewImg ? 'Change Image' : 'Upload Image'}
+                    </label>
+                    {previewImg && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, image: '' }));
+                          if (fileInputRef.current) fileInputRef.current.value = '';
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition-colors"
+                      >
+                        Remove Image
+                      </button>
+                    )}
+                    {imageError && (
+                      <p className="text-[11px] text-rose-500 mt-1">{imageError}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Action Buttons */}

@@ -249,14 +249,21 @@ export const TrustDashboard = () => {
                 className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-4">
-                  <img
-                    src={getMatchingFoodImage(ord.foodName, '', ord.foodImage)}
-                    alt={ord.foodName}
-                    className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-slate-200"
-                    onError={(e) => {
-                      e.target.src = getMatchingFoodImage(ord.foodName, '');
-                    }}
-                  />
+                  {(() => {
+                    const trustImg = getMatchingFoodImage(ord.foodName, '', ord.foodImage);
+                    return trustImg ? (
+                      <img
+                        src={trustImg}
+                        alt={ord.foodName}
+                        className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-slate-200"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-2xl bg-slate-200/80 border border-slate-300 shrink-0" />
+                    );
+                  })()}
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold text-xs text-slate-900">{ord.id}</span>

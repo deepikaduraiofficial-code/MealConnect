@@ -8,18 +8,52 @@ import {
   INITIAL_NOTIFICATIONS,
   SYSTEM_STATS 
 } from '../data/mockData';
-import { getMatchingFoodImage } from '../utils/foodImageResolver';
+import { isDeletedImage, isValidFoodImage } from '../utils/foodImageResolver';
 import { calculateFoodStatus, getDefaultExpiryTimes } from '../utils/expiryUtils';
 import { generateOrderQRCode, generatePickupPin } from '../utils/qrUtils';
 import { api } from '../services/api';
 
 const AppContext = createContext();
 
+// Unwanted duplicate / invalid item IDs confirmed for removal
+export const REMOVED_FOOD_IDS = new Set([
+  'food-20',  // Duplicate Chapati
+  'food-105', // Duplicate Chapati
+  'food-50',  // Murukku (no image)
+  'food-51',  // Mixture (no image)
+  'food-52',  // Sundal (no image)
+  'food-53',  // Pani Puri (no image)
+  'food-54',  // Masala Puri (no image)
+  'food-56',  // Cutlet (no image)
+  'food-57',  // Vegetable Cutlet (no image)
+  'food-60'   // Spring Roll (no image)
+]);
+
+export const isValidFoodItem = (item) => {
+  if (!item || !item.name) return false;
+  const id = String(item.id || item._id || '');
+  if (id && REMOVED_FOOD_IDS.has(id)) return false;
+  return isValidFoodImage(item.image);
+};
+
 const normalizeDietary = (dietary) => {
   if (dietary === 'Non-Veg' || dietary === 'Non-Vegetarian') {
     return 'Non-Veg';
   }
   return 'Veg';
+};
+
+const sanitizeFoodItem = (item) => {
+  if (!item) return item;
+  const currentImg = item.image;
+  const cleanImg = (!currentImg || isDeletedImage(currentImg))
+    ? ''
+    : currentImg;
+  return {
+    ...item,
+    image: cleanImg,
+    dietary: normalizeDietary(item.dietary)
+  };
 };
 
 const VALID_VIEWS = [
@@ -117,24 +151,32 @@ export const AppProvider = ({ children }) => {
   });
 
   const [listings, setListings] = useState(() => {
-    const saved = localStorage.getItem('fm_listings_v3') || localStorage.getItem('fm_listings');
+    // Purge outdated caches with old image references and invalid cards
+    try {
+      localStorage.removeItem('fm_listings');
+      localStorage.removeItem('fm_listings_v2');
+      localStorage.removeItem('fm_listings_v3');
+      localStorage.removeItem('fm_listings_v4');
+    } catch (e) {}
+
+    const saved = localStorage.getItem('fm_listings_v5');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map(item => ({
-            ...item,
-            image: item.image || getMatchingFoodImage(item.name, item.category),
-            dietary: normalizeDietary(item.dietary)
-          }));
+          const sanitized = parsed.filter(isValidFoodItem).map(sanitizeFoodItem);
+          if (sanitized.length > 0) {
+            localStorage.setItem('fm_listings_v5', JSON.stringify(sanitized));
+            return sanitized;
+          }
         }
       } catch (e) {}
     }
-    return getInitialFoodListings().map(item => ({
-      ...item,
-      image: item.image || getMatchingFoodImage(item.name, item.category),
-      dietary: normalizeDietary(item.dietary)
-    }));
+    const initials = getInitialFoodListings().filter(isValidFoodItem).map(sanitizeFoodItem);
+    try {
+      localStorage.setItem('fm_listings_v5', JSON.stringify(initials));
+    } catch (e) {}
+    return initials;
   });
 
   const [orders, setOrders] = useState(() => {
@@ -145,6 +187,10 @@ export const AppProvider = ({ children }) => {
         if (Array.isArray(parsed) && parsed.length > 0) {
           return parsed.map(o => ({
             ...o,
+            foodImage: (!o.foodImage || isDeletedImage(o.foodImage))
+              ? ''
+              : o.foodImage,
+            food: o.food ? sanitizeFoodItem(o.food) : o.food,
             pickupCode: o.pickupCode || `MC-${(o.id || '9000').slice(-4)}`,
             isQrVerified: o.isQrVerified ?? (o.orderStatus === 'Collected' || o.orderStatus === 'Completed'),
             pickupVerification: o.pickupVerification || null
@@ -152,12 +198,31 @@ export const AppProvider = ({ children }) => {
         }
       } catch (e) {}
     }
-    return INITIAL_ORDERS;
+    return INITIAL_ORDERS.map(o => ({
+      ...o,
+      foodImage: (!o.foodImage || isDeletedImage(o.foodImage))
+        ? ''
+        : o.foodImage,
+      food: o.food ? sanitizeFoodItem(o.food) : o.food
+    }));
   });
 
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem('fm_cart');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed
+            .filter(item => item && isValidFoodItem(item.food))
+            .map(item => ({
+              ...item,
+              food: sanitizeFoodItem(item.food)
+            }));
+        }
+      } catch (e) {}
+    }
+    return [];
   });
 
   const [notifications, setNotifications] = useState(() => {
@@ -189,14 +254,16 @@ export const AppProvider = ({ children }) => {
       // 1. Fetch Listings
       const listingsRes = await api.food.getListings().catch(() => null);
       if (listingsRes && listingsRes.success && Array.isArray(listingsRes.data) && listingsRes.data.length > 0) {
-        const sanitized = listingsRes.data.map(item => ({
-          ...item,
-          id: item.id || item._id,
-          image: item.image || getMatchingFoodImage(item.name, item.category),
-          dietary: normalizeDietary(item.dietary)
-        }));
-        setListings(sanitized);
-        localStorage.setItem('fm_listings_v3', JSON.stringify(sanitized));
+        const sanitized = listingsRes.data
+          .filter(isValidFoodItem)
+          .map(item => sanitizeFoodItem({
+            ...item,
+            id: item.id || item._id
+          }));
+        if (sanitized.length > 0) {
+          setListings(sanitized);
+          localStorage.setItem('fm_listings_v5', JSON.stringify(sanitized));
+        }
       }
 
       // 2. Fetch Hotels
@@ -263,8 +330,13 @@ export const AppProvider = ({ children }) => {
     }
     localStorage.setItem('fm_hotels', JSON.stringify(hotels));
     localStorage.setItem('fm_trusts', JSON.stringify(trusts));
-    localStorage.setItem('fm_listings_v3', JSON.stringify(listings));
-    localStorage.setItem('fm_listings', JSON.stringify(listings));
+    const validListings = listings.filter(isValidFoodItem);
+    localStorage.setItem('fm_listings_v5', JSON.stringify(validListings));
+    try {
+      localStorage.removeItem('fm_listings_v4');
+      localStorage.removeItem('fm_listings_v3');
+      localStorage.removeItem('fm_listings');
+    } catch (e) {}
     localStorage.setItem('fm_orders', JSON.stringify(orders));
     localStorage.setItem('fm_cart', JSON.stringify(cart));
     localStorage.setItem('fm_notifications', JSON.stringify(notifications));
@@ -630,6 +702,25 @@ export const AppProvider = ({ children }) => {
       setSelectedFoodForDetail(null);
     }
     showToast('Food item deleted successfully', 'success');
+  };
+
+  // Permanently Delete Food Image - Removes listing to completely prevent empty/black cards from returning
+  const deleteFoodImage = async (listingId) => {
+    try {
+      if (listingId && !String(listingId).startsWith('food-demo')) {
+        await api.food.delete(listingId).catch(() => null);
+      }
+    } catch (e) {
+      console.warn('Backend food delete note:', e.message);
+    }
+
+    setListings(prev => prev.filter(item => item.id !== listingId && item._id !== listingId));
+    setCart(prev => prev.filter(c => c.food.id !== listingId && c.food._id !== listingId));
+    if (selectedFoodForDetail && (selectedFoodForDetail.id === listingId || selectedFoodForDetail._id === listingId)) {
+      setSelectedFoodForDetail(null);
+    }
+
+    showToast('Food listing with removed image deleted successfully', 'success');
   };
 
   // Cart operations (Backend Connected with local sync)
@@ -1058,6 +1149,7 @@ export const AppProvider = ({ children }) => {
       addFoodListing,
       updateFoodListing,
       deleteFoodListing,
+      deleteFoodImage,
       addToCart,
       updateCartQuantity,
       removeFromCart,

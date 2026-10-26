@@ -93,14 +93,21 @@ export const OrderTrackingPage = () => {
         {/* Header Info */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-4">
-            <img
-              src={getMatchingFoodImage(targetOrder.foodName, '', targetOrder.foodImage)}
-              alt={targetOrder.foodName}
-              className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0"
-              onError={(e) => {
-                e.target.src = getMatchingFoodImage(targetOrder.foodName, '');
-              }}
-            />
+            {(() => {
+              const trackingImg = getMatchingFoodImage(targetOrder.foodName, '', targetOrder.foodImage);
+              return trackingImg ? (
+                <img
+                  src={trackingImg}
+                  alt={targetOrder.foodName}
+                  className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-2xl bg-slate-200/80 border border-slate-300 shrink-0" />
+              );
+            })()}
             <div>
               <h2 className="text-xl font-extrabold text-slate-900 font-heading">{targetOrder.foodName}</h2>
               <p className="text-xs text-slate-500 mt-0.5">

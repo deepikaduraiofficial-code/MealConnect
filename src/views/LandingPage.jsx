@@ -122,20 +122,26 @@ export const LandingPage = ({ onOpenAuth }) => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {listings.slice(0, 3).map((item) => (
-                <div 
-                  key={item.id}
-                  onClick={() => setActiveView('marketplace')}
-                  className="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/70 cursor-pointer transition-all space-y-3 group"
-                >
-                  <img
-                    src={getMatchingFoodImage(item.name, item.category, item.image)}
-                    alt={item.name}
-                    className="w-full h-32 rounded-xl object-cover group-hover:scale-105 transition-transform"
-                    onError={(e) => {
-                      e.target.src = getMatchingFoodImage(item.name, item.category);
-                    }}
-                  />
+              {listings
+                .filter(item => getMatchingFoodImage(item.name, item.category, item.image))
+                .slice(0, 3)
+                .map((item) => {
+                  const landingImg = getMatchingFoodImage(item.name, item.category, item.image);
+                  return (
+                    <div 
+                      key={item.id}
+                      onClick={() => setActiveView('marketplace')}
+                      className="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/70 cursor-pointer transition-all space-y-3 group"
+                    >
+                      <img
+                        src={landingImg}
+                        alt={item.name}
+                        className="w-full h-32 rounded-xl object-cover group-hover:scale-105 transition-transform bg-slate-100"
+                        onError={(e) => {
+                          const card = e.target.closest('.group');
+                          if (card) card.style.display = 'none';
+                        }}
+                      />
                   <div>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
                       {item.category}
@@ -148,7 +154,8 @@ export const LandingPage = ({ onOpenAuth }) => {
                     </div>
                   </div>
                 </div>
-              ))}
+              );
+            })}
             </div>
           </div>
 

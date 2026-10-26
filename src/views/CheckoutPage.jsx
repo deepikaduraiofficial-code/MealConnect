@@ -282,14 +282,21 @@ export const CheckoutPage = () => {
 
             {/* Selected Food Item Preview */}
             <div className="flex items-center gap-3 bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700">
-              <img
-                src={getMatchingFoodImage(primaryItem.name, primaryItem.category, primaryItem.image)}
-                alt={primaryItem.name}
-                className="w-14 h-14 rounded-xl object-cover shrink-0"
-                onError={(e) => {
-                  e.target.src = getMatchingFoodImage(primaryItem.name, primaryItem.category);
-                }}
-              />
+              {(() => {
+                const checkoutImg = getMatchingFoodImage(primaryItem.name, primaryItem.category, primaryItem.image);
+                return checkoutImg ? (
+                  <img
+                    src={checkoutImg}
+                    alt={primaryItem.name}
+                    className="w-14 h-14 rounded-xl object-cover shrink-0"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-xl bg-slate-700 border border-slate-600 shrink-0" />
+                );
+              })()}
               <div className="min-w-0 flex-1">
                 <h4 className="font-bold text-xs truncate text-white">{primaryItem.name}</h4>
                 <p className="text-[11px] text-emerald-400 font-semibold">{primaryItem.hotelName}</p>

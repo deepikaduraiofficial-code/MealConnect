@@ -2,82 +2,77 @@
   {
     "id": "food-4",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-9",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-10",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-11",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-12",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-13",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-14",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-15",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-16",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-17",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-18",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-19",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
-  },
-  {
-    "id": "food-20",
-    "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-21",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-22",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-23",
     "category": "Breakfast",
-    "image": "/food-images/steamed_idli_hot_sambar.jpg"
+    "image": "/food-images/idli.jpg"
   },
   {
     "id": "food-1",
@@ -87,7 +82,8 @@
   {
     "id": "food-2",
     "category": "Lunch & Main Course",
-    "image": "/food-images/south_indian_meals.jpg"
+    "image": "/food-images/south_indian_meals.jpg",
+    "name": "Chapathi & Vegetable Kurma"
   },
   {
     "id": "food-3",
@@ -235,42 +231,7 @@
     "image": "/food-images/samosa.jpg"
   },
   {
-    "id": "food-50",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-51",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-52",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-53",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-54",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
     "id": "food-55",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-56",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-57",
     "category": "Snacks",
     "image": "/food-images/samosa.jpg"
   },
@@ -281,11 +242,6 @@
   },
   {
     "id": "food-59",
-    "category": "Snacks",
-    "image": "/food-images/samosa.jpg"
-  },
-  {
-    "id": "food-60",
     "category": "Snacks",
     "image": "/food-images/samosa.jpg"
   },
@@ -437,57 +393,57 @@
   {
     "id": "food-89",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-90",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-91",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-92",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-93",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-94",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-95",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-96",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-97",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-98",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-99",
     "category": "Non-Vegetarian",
-    "image": "/food-images/chicken_biryani.jpg"
+    "image": "/food-images/chicken_65.jpg"
   },
   {
     "id": "food-100",
@@ -511,11 +467,6 @@
   },
   {
     "id": "food-104",
-    "category": "Combo Meals",
-    "image": "/food-images/south_indian_meals.jpg"
-  },
-  {
-    "id": "food-105",
     "category": "Combo Meals",
     "image": "/food-images/south_indian_meals.jpg"
   },

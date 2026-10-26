@@ -388,16 +388,23 @@ export const AdminDashboard = () => {
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
             <h3 className="font-extrabold text-base text-slate-900">Active Marketplace Food Listing Moderation</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {listings.map((item) => (
+              {listings
+                .filter(item => getMatchingFoodImage(item.name, item.category, item.image))
+                .map((item) => (
                 <div key={item.id} className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-start gap-3">
-                  <img
-                    src={getMatchingFoodImage(item.name, item.category, item.image)}
-                    alt={item.name}
-                    className="w-16 h-16 rounded-xl object-cover shrink-0"
-                    onError={(e) => {
-                      e.target.src = getMatchingFoodImage(item.name, item.category);
-                    }}
-                  />
+                  {(() => {
+                    const adminImg = getMatchingFoodImage(item.name, item.category, item.image);
+                    return (
+                      <img
+                        src={adminImg}
+                        alt={item.name}
+                        className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200 bg-slate-100"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    );
+                  })()}
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-slate-900 text-xs truncate">{item.name}</h4>
                     <p className="text-[11px] text-emerald-700 font-semibold">{item.hotelName}</p>

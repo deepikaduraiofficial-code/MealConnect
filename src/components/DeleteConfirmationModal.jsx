@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Trash2, AlertTriangle, X, MapPin, Tag, Building2, ShoppingBag } from 'lucide-react';
 import { getMatchingFoodImage } from '../utils/foodImageResolver';
 
-export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, foodItem }) => {
+export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, foodItem, mode = 'listing' }) => {
   // Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -17,6 +17,9 @@ export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, foodItem }
   }, [isOpen, onClose]);
 
   if (!isOpen || !foodItem) return null;
+
+  const isImageMode = mode === 'image';
+  const previewImg = getMatchingFoodImage(foodItem.name, foodItem.category, foodItem.image);
 
   return (
     <div 
@@ -47,23 +50,29 @@ export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, foodItem }
               <Trash2 className="w-7 h-7" />
             </div>
             <h3 id="delete-dialog-title" className="text-xl font-extrabold text-slate-900 font-heading">
-              Delete Food Item
+              {isImageMode ? 'Delete Food Image' : 'Delete Food Item'}
             </h3>
             <p className="text-sm font-semibold text-slate-700">
-              Are you sure you want to delete this food item?
+              {isImageMode 
+                ? `Are you sure you want to permanently delete this food image?`
+                : 'Are you sure you want to delete this food item?'}
             </p>
           </div>
 
           {/* Item details preview card being deleted */}
           <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 flex gap-3 items-center">
-            <img
-              src={getMatchingFoodImage(foodItem.name, foodItem.category, foodItem.image)}
-              alt={foodItem.name}
-              className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200"
-              onError={(e) => {
-                e.target.src = getMatchingFoodImage(foodItem.name, foodItem.category);
-              }}
-            />
+            {previewImg ? (
+              <img
+                src={previewImg}
+                alt={foodItem.name}
+                className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-xl bg-slate-200/80 border border-slate-300 shrink-0" />
+            )}
             <div className="min-w-0 flex-1 space-y-1">
               <h4 className="font-extrabold text-slate-900 text-sm truncate">
                 {foodItem.name}
@@ -88,7 +97,9 @@ export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, foodItem }
           <div className="flex items-start gap-2 text-xs text-rose-700 bg-rose-50/70 p-3 rounded-xl border border-rose-100">
             <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
             <p className="leading-snug">
-              This will permanently remove this item and its complete details from the food listing, categories, and search results.
+              {isImageMode
+                ? 'This will permanently remove the image from this food listing and storage. The food item, price, quantity, and availability will stay active.'
+                : 'This will permanently remove this item and its complete details from the food listing, categories, and search results.'}
             </p>
           </div>
 
@@ -104,13 +115,13 @@ export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, foodItem }
             <button
               type="button"
               onClick={() => {
-                onConfirm(foodItem.id);
+                onConfirm(foodItem.id || foodItem._id);
                 onClose();
               }}
               className="w-full py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-1.5"
             >
               <Trash2 className="w-4 h-4" />
-              Delete
+              {isImageMode ? 'Delete Image' : 'Delete Listing'}
             </button>
           </div>
 
